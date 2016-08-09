@@ -1,15 +1,16 @@
 #initializing the table
 class Table
-  
+
   #set table size
   def initialize
 		@width = 5
 		@height = 5
+    @min = 0
 	end
 
  #set table cordinate system to 0
 	def table_range(range)
-		(0..range - 1)
+		(@min..range - 1)
 	end
 
  #to validate placement in commands
