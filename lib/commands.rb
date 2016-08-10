@@ -1,7 +1,11 @@
+require 'os'
+require 'etc'
 require_relative 'robot'
 require_relative 'table'
 
+
 class Commands
+	$account = Etc.getlogin
 	VALID_COMMANDS = ["PLACE X,Y,FACING", "MOVE", "LEFT", "RIGHT", "REPORT", "SELFDESTRUCT", "EXIT"]
 	TURNING = {"LEFT" => -1, "RIGHT" => 1}
 
@@ -19,7 +23,7 @@ class Commands
 
 	#introduction
 	def greeting
-		puts "Welcome commander."
+		puts "Welcome commander #{$account}."
 		puts "The table needs to be invaded and we require your expertise to navigate a terminator-robot to rampage this little world (from #{@min},#{@min} up to #{@width - 1},#{@height - 1})"
 		puts "The only commands it will accept are ..."
 		puts ""
@@ -42,7 +46,9 @@ class Commands
 	def input_command
 		loop do
 			puts ""
-			puts "What are your commands my master?"
+			puts "What are your commands master #{$account}?"
+			# cmd  = ('say "What are your commands my master?"')
+			# system cmd
 			give_command(gets.chomp.upcase)
 		end
 	end
@@ -58,13 +64,17 @@ class Commands
 				place(command)
 			end
 		elsif command == "EXIT"
+			if OS.mac?
+				cmd =("say 'Bye bye, #{$account}!'" )
+				system cmd
+			end
 			exit
 		elsif !valid_command?(command)
 			puts ""
 			puts "Sorry but \"#{command}\" is not a valid command"
 		elsif !@robot.robot_placed?
 			puts ""
-			puts "Sorry but you need to place the robot before \"#{command}\" will be accepted"
+			puts "Sorry #{$account}, but you need to place the robot before \"#{command}\" will be accepted"
 		else
 			case command
 			when "SELFDESTRUCT" then destruct
@@ -114,6 +124,10 @@ class Commands
 	def move
 		if valid_move?
 			puts ""
+			if OS.mac?
+				cmd = ('say "roger-roger"')
+				system cmd
+			end
 			puts "Roger, roger I\'m moving forward one field!"
 			case @robot_direction
 			when "EAST" then @x += 1
@@ -141,11 +155,23 @@ class Commands
 	#destroying existing robot and enable creation of new robot
 	def destruct
 		puts ""
+		if OS.mac?
+			cmd =('say "why!!!"' )
+			system cmd
+		end
 		puts "...whyyyyyyyyyy!!!"
+		if OS.mac?
+			cmd =('say "I want to live.."' )
+			system cmd
+		end
 		puts "...5...I want to live..."
 		puts "...4...please,....master...."
 		puts "...3...don\'t do it.."
 		puts "...2...my lives work..."
+		if OS.mac?
+			cmd =('say "I\'ll be back!!"' )
+		end
+		system cmd
 		puts "...1...I\'ll be back!"
 		puts " BOOOOOOMMM!!!..."
 		puts "Your robot exploded... The world is save (until you place a new robot)"
